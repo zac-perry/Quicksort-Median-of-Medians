@@ -10,6 +10,18 @@ import (
 	"strconv"
 )
 
+// TODO - median of median algo to select a good pivot value
+// general idea: 
+// - Divide the arr into len(arr)/r sub arrays
+// - find the median in each
+// - then, take the median of these median values to use as the pivot? 
+// r is hte number of elements in each sub array
+// consider returning the index of the median value found to make life easier
+func medianOfMedians(numbers []int, low int, high int, r int) {
+
+
+}
+
 // calculation the pivot index
 // Then, call quicksort on the 'left' lower elements
 // Then, call quicksort on the 'right' lower elements
@@ -28,6 +40,7 @@ func quicksort(numbers []int, low int, high int) []int {
 // Then, swap the final elements at i and high indexes, return the pivot index and modified slice
 func partition(numbers []int, low int, high int) (int, []int) {
 	pivot := numbers[high]
+  // here, call the median of medians function i guess
 
 	i := low
 	for j := low; j < high; j++ {
