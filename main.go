@@ -1,5 +1,6 @@
 // Zachary Perry
 // 2/20/25
+// Median of medians pivot selection for quick sort
 
 package main
 
@@ -11,15 +12,32 @@ import (
 )
 
 // TODO - median of median algo to select a good pivot value
-// general idea: 
+// general idea:
 // - Divide the arr into len(arr)/r sub arrays
 // - find the median in each
-// - then, take the median of these median values to use as the pivot? 
+// - then, take the median of these median values to use as the pivot?
 // r is hte number of elements in each sub array
 // consider returning the index of the median value found to make life easier
-func medianOfMedians(numbers []int, low int, high int, r int) {
+func medianOfMedians(numbers []int, r int) int {
 
+	// if the current length <= r, then go ahead and solve, return
+	// otherwise:
 
+	medians := []int{}
+	medianIndex := []int{}
+	numSubArrays := len(numbers) / r
+
+	fmt.Println(medians, numSubArrays, medianIndex)
+
+	// loop over this, get the median of the elements (helper function)
+	// ever r elements, anything left over, solve seperetly
+	// account for any elements that dont fall into the r!
+	// make sure to add to the medians slice
+
+	// then, once i have all medians, recursive call to medians
+	pivot := medianOfMedians(medians, r)
+
+	return pivot
 }
 
 // calculation the pivot index
@@ -40,7 +58,7 @@ func quicksort(numbers []int, low int, high int) []int {
 // Then, swap the final elements at i and high indexes, return the pivot index and modified slice
 func partition(numbers []int, low int, high int) (int, []int) {
 	pivot := numbers[high]
-  // here, call the median of medians function i guess
+	// here, call the median of medians function i guess
 
 	i := low
 	for j := low; j < high; j++ {
@@ -84,5 +102,5 @@ func main() {
 	}
 
 	fmt.Println("Numbers before sorting: ", numbers)
-	fmt.Println("Numbers after sorting: ", quicksort(numbers, 0, len(numbers)-1))
+	fmt.Println("Numbers after sorting : ", quicksort(numbers, 0, len(numbers)-1))
 }
