@@ -17,14 +17,8 @@ import (
 	"strconv"
 )
 
-func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("usage: ./bin/main filename [-benchmark]")
-		os.Exit(1)
-	}
-
-	// Open the file and read the contents
-	file, err := os.Open(os.Args[1])
+func readFile(fileName string) []int {
+	file, err := os.Open(fileName)
 	if err != nil {
 		fmt.Println("Error encounter trying to open the file..")
 		os.Exit(1)
@@ -43,14 +37,27 @@ func main() {
 
 		numbers = append(numbers, num)
 	}
+	return numbers
+}
+
+func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("usage: ./bin/main filename [-benchmark]")
+		os.Exit(1)
+	}
 
 	// if benchmark enabled, run that
 	if len(os.Args) == 3 && os.Args[2] == "-benchmark" {
-		benchmark(numbers)
+		numbers := readFile(os.Args[1])
+		benchmarkOnFile(numbers)
+		return
+	} else if len(os.Args) == 2 && os.Args[1] == "-benchmark" {
+		benchmark()
 		return
 	}
 
 	r := 5
+	numbers := readFile(os.Args[1])
 	sortedNumbers := quicksort(numbers, 0, len(numbers)-1, r)
 	printOutput(sortedNumbers)
 }
