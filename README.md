@@ -1,5 +1,5 @@
-# CS581-QuickSort
-Quick Sort implementation using the median-of-medians pivot selection algorithm
+# QuickSort with Median of Medians
+Quick Sort implementation using the median-of-medians pivot selection algorithm.
 
 # TODO: 
 - [x] Makefile, general setup
@@ -9,6 +9,7 @@ Quick Sort implementation using the median-of-medians pivot selection algorithm
 - [ ] Update README with details, how to run, etc.
 - [ ] Finish up comments
 - [ ] Test on the hydra/tesla machines
+- [ ] Writeup (include graphs, method, etc)
 - [x] consider adding benchmark tests? 
 - [x] finish benchmark setup
   ~~Involves adding randomized arrays~~

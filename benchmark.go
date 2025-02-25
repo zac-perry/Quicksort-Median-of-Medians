@@ -34,7 +34,7 @@ func generateTestArray() []int {
 	return numbers
 }
 
-/* 
+/*
 plotResults will plot r vs time (in seconds)
 */
 func plotResults(data map[int]float64, title string, fileName string) {
