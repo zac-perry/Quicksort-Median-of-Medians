@@ -28,32 +28,42 @@ func printOutput(sortedNumbers []int) {
 	fmt.Print("\n")
 }
 
-// TODO: Plotting the results for my report
-func plotResults() {}
-
 // TODO: Generate random array of 1 mil elements to test with.
 // Will end up running the benchmark multiple times
 func generateTestArray() []int {
-	numbers := make([]int, 1000000)
+	numbers := make([]int, 1_000_000)
 
-	for i := 0; i < 1000000; i++ {
+	for i := 0; i < 1_000_000; i++ {
 		numbers[i] = rand.Int()
 	}
 
 	return numbers
 }
 
-// TODO: Average multiple runs for each r using various 1mil element arrays
-func averageResults() {}
+// TODO: Plotting the results for my report
+func plotResults() {}
 
 /*
-benchmark function will run quicksort with various values of r.
-TODO: run on random 1 mil arrays 10 times for each value of r.
-TODO: run on the input specified as well i suppose.
+averageResults just averages all times recorded for each r value during the benchmark.
+ */
+func averageResults(data []float64) float64 {
+	sum := 0.0
+
+	for i := 0; i < len(data); i++ {
+		sum += data[i]
+	}
+
+	return sum / float64(len(data))
+}
+
+/*
+benchmark function will run quicksort with various values of r on 10 different, random arrays of 1 million elements.
 */
 func benchmark() {
+	data := make(map[int][]float64)
+
 	for i := 0; i < 10; i++ {
-		fmt.Println("===========================================")
+		fmt.Println("\n===========================================")
 		fmt.Println("         RUNNING IN BENCHMARK MODE")
 		fmt.Println("                 RUN #", i)
 		fmt.Println("===========================================")
@@ -69,9 +79,11 @@ func benchmark() {
 
 			startingTime := time.Now()
 			quicksort(copyNumbers, 0, len(copyNumbers)-1, r)
-			finalTime := time.Since(startingTime)
+			finalTime := time.Since(startingTime).Seconds()
 
-			fmt.Printf(" r = %3d  | Final Time: %6.10f s\n", r, finalTime.Seconds())
+			fmt.Printf(" r = %3d  | Final Time: %6.10f s\n", r, finalTime)
+			data[r] = append(data[r], finalTime)
+
 			r += 2
 
 			for i := 0; i < len(sortedCopy); i++ {
@@ -81,8 +93,19 @@ func benchmark() {
 			}
 		}
 	}
+	fmt.Println("\n\n===========================================")
+	fmt.Println("        AVERAGE TIMES FOR EACH R")
+	fmt.Println("===========================================")
+
+	for k, v := range data {
+		average := averageResults(v)
+		fmt.Printf(" r = %3d  | Average Time: %6.10f s\n", k, average)
+	}
 }
 
+/*
+benchmarkOnFile will take the file as input and run the sort using different r values.
+*/
 func benchmarkOnFile(numbers []int) {
 	fmt.Println("===========================================")
 	fmt.Println("         RUNNING IN BENCHMARK MODE")

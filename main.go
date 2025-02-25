@@ -46,7 +46,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	// if benchmark enabled, run that
+	// if benchmark enabled and file provided, run benchmark using the file as the input
+	// otherwise, run the benchmark using random arrays of 1 million integers
 	if len(os.Args) == 3 && os.Args[2] == "-benchmark" {
 		numbers := readFile(os.Args[1])
 		benchmarkOnFile(numbers)
@@ -56,6 +57,7 @@ func main() {
 		return
 	}
 
+	// defaulting to an r of 5 here
 	r := 5
 	numbers := readFile(os.Args[1])
 	sortedNumbers := quicksort(numbers, 0, len(numbers)-1, r)
