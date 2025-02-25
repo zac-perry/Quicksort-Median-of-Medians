@@ -17,6 +17,10 @@ import (
 	"strconv"
 )
 
+/*
+readFile will just read the numbers in from the file.
+This assumes that the file contains a single number on each line (seperated by newlines).
+*/
 func readFile(fileName string) []int {
 	file, err := os.Open(fileName)
 	if err != nil {
@@ -38,6 +42,17 @@ func readFile(fileName string) []int {
 		numbers = append(numbers, num)
 	}
 	return numbers
+}
+
+/*
+printOutput will just print out the sorted numbers in a semi-readable fashion
+*/
+func printOutput(sortedNumbers []int) {
+	for i := 0; i < len(sortedNumbers); i++ {
+		fmt.Print(sortedNumbers[i], " ")
+	}
+
+	fmt.Print("\n")
 }
 
 func main() {

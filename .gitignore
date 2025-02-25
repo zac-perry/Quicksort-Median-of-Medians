@@ -9,3 +9,4 @@ go.work
 tmp/
 .env
 bin/
+*.DS_Store

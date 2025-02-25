@@ -13,23 +13,17 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"sort"
 	"time"
+
+	"github.com/go-echarts/go-echarts/v2/charts"
+	"github.com/go-echarts/go-echarts/v2/opts"
 )
 
 /*
-printOutput will just print out the sorted numbers in a semi-readable fashion
+generateTestArray will generate a slice of 1,000,000 random integers
 */
-func printOutput(sortedNumbers []int) {
-	for i := 0; i < len(sortedNumbers); i++ {
-		fmt.Print(sortedNumbers[i], " ")
-	}
-
-	fmt.Print("\n")
-}
-
-// TODO: Generate random array of 1 mil elements to test with.
-// Will end up running the benchmark multiple times
 func generateTestArray() []int {
 	numbers := make([]int, 1_000_000)
 
@@ -40,12 +34,46 @@ func generateTestArray() []int {
 	return numbers
 }
 
-// TODO: Plotting the results for my report
-func plotResults() {}
+/* 
+plotResults will plot r vs time (in seconds)
+*/
+func plotResults(data map[int]float64, title string, fileName string) {
+	barChart := charts.NewBar()
+	barChart.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
+		Title:    title,
+		Subtitle: "by Zac Perry",
+	}),
+		charts.WithXAxisOpts(opts.XAxis{
+			Name:         "r values",
+			NameLocation: "middle",
+			NameGap:      40,
+		}),
+		charts.WithYAxisOpts(opts.YAxis{
+			Name:         "Time (in seconds)",
+			NameLocation: "middle",
+			NameGap:      70,
+		}))
+
+	keys := []int{}
+	values := []opts.BarData{}
+	for k := range data {
+		keys = append(keys, k)
+	}
+
+	sort.Ints(keys)
+	for _, k := range keys {
+		values = append(values, opts.BarData{Value: data[k]})
+	}
+
+	barChart.SetXAxis(keys).AddSeries("Times", values)
+
+	f, _ := os.Create(fileName)
+	barChart.Render(f)
+}
 
 /*
 averageResults just averages all times recorded for each r value during the benchmark.
- */
+*/
 func averageResults(data []float64) float64 {
 	sum := 0.0
 
@@ -75,7 +103,6 @@ func benchmark() {
 			sortedCopy := make([]int, len(numbers))
 			copy(copyNumbers, numbers)
 			copy(sortedCopy, numbers)
-			sort.Ints(sortedCopy)
 
 			startingTime := time.Now()
 			quicksort(copyNumbers, 0, len(copyNumbers)-1, r)
@@ -84,23 +111,24 @@ func benchmark() {
 			fmt.Printf(" r = %3d  | Final Time: %6.10f s\n", r, finalTime)
 			data[r] = append(data[r], finalTime)
 
-			r += 2
+			sort.Ints(sortedCopy)
+			checkSort(copyNumbers, sortedCopy)
 
-			for i := 0; i < len(sortedCopy); i++ {
-				if sortedCopy[i] != copyNumbers[i] {
-					fmt.Println("ERROR ------ DID NOT SORT CORRECTLY!")
-				}
-			}
+			r += 2
 		}
 	}
 	fmt.Println("\n\n===========================================")
 	fmt.Println("        AVERAGE TIMES FOR EACH R")
 	fmt.Println("===========================================")
 
+	avgData := make(map[int]float64)
 	for k, v := range data {
 		average := averageResults(v)
+		avgData[k] = average
 		fmt.Printf(" r = %3d  | Average Time: %6.10f s\n", k, average)
 	}
+
+	plotResults(avgData, "Average Sorting Times for Each R", "./images/avg_bar_char.html")
 }
 
 /*
@@ -111,26 +139,39 @@ func benchmarkOnFile(numbers []int) {
 	fmt.Println("         RUNNING IN BENCHMARK MODE")
 	fmt.Println("        USING PROVIDED FILE AS INPUT")
 	fmt.Println("===========================================")
-
+	data := make(map[int]float64)
 	r := 3
+
 	for r < 13 {
 		copyNumbers := make([]int, len(numbers))
 		sortedCopy := make([]int, len(numbers))
 		copy(copyNumbers, numbers)
 		copy(sortedCopy, numbers)
-		sort.Ints(sortedCopy)
 
 		startingTime := time.Now()
 		quicksort(copyNumbers, 0, len(copyNumbers)-1, r)
-		finalTime := time.Since(startingTime)
+		finalTime := time.Since(startingTime).Seconds()
 
-		fmt.Printf(" r = %3d  | Final Time: %6.10f s\n", r, finalTime.Seconds())
+		fmt.Printf(" r = %3d  | Final Time: %6.10f s\n", r, finalTime)
+		data[r] = finalTime
+
+		sort.Ints(sortedCopy)
+		checkSort(copyNumbers, sortedCopy)
+
 		r += 2
+	}
 
-		for i := 0; i < len(sortedCopy); i++ {
-			if sortedCopy[i] != copyNumbers[i] {
-				fmt.Println("ERROR ------ DID NOT SORT CORRECTLY!")
-			}
+	plotResults(data, "Sorting Time for Each R for Input File", "./images/input_bar_char.html")
+}
+
+/*
+checkSort will just ensure that my sorting algorithm actually worked.
+*/
+func checkSort(mine []int, correct []int) {
+	for i := 0; i < len(correct); i++ {
+		if correct[i] != mine[i] {
+			fmt.Println("ERROR ------ DID NOT SORT CORRECTLY!")
+			return
 		}
 	}
 }
