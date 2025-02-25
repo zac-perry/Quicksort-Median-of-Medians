@@ -17,10 +17,8 @@ import (
 	"strconv"
 )
 
-/*
-readFile will just read the numbers in from the file.
-This assumes that the file contains a single number on each line (seperated by newlines).
-*/
+// readFile will just read the numbers in from the file.
+// This assumes that the file contains a single number on each line (seperated by newlines).
 func readFile(fileName string) []int {
 	file, err := os.Open(fileName)
 	if err != nil {
@@ -44,9 +42,7 @@ func readFile(fileName string) []int {
 	return numbers
 }
 
-/*
-printOutput will just print out the sorted numbers in a semi-readable fashion
-*/
+// printOutput just does exactly what is says -> prints the output
 func printOutput(sortedNumbers []int) {
 	for i := 0; i < len(sortedNumbers); i++ {
 		fmt.Print(sortedNumbers[i], " ")
@@ -61,8 +57,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	// if benchmark enabled and file provided, run benchmark using the file as the input
-	// otherwise, run the benchmark using random arrays of 1 million integers
+	// If benchmark enabled and file provided, run benchmark using the file as the input
+	// Otherwise, run the benchmark using random arrays of 1 million integers
 	if len(os.Args) == 3 && os.Args[2] == "-benchmark" {
 		numbers := readFile(os.Args[1])
 		benchmarkOnFile(numbers)
@@ -72,7 +68,7 @@ func main() {
 		return
 	}
 
-	// defaulting to an r of 5 here
+	// Defaulting to an r of 5 here (benchmark tests 3,5,7,9,11)
 	r := 5
 	numbers := readFile(os.Args[1])
 	sortedNumbers := quicksort(numbers, 0, len(numbers)-1, r)

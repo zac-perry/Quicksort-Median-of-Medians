@@ -7,9 +7,11 @@ Quick Sort implementation using the median-of-medians pivot selection algorithm.
 - [x] Basic implementation
 - [x] Implementation with median-of-medians
 - [ ] Update README with details, how to run, etc.
-- [ ] Finish up comments
+- [ ] Finish up comments (provided sources used, etc.)
 - [ ] Test on the hydra/tesla machines
 - [ ] Writeup (include graphs, method, etc)
+- [ ] Probably best to merge the qucksort fie with main for simplicity
+- [ ] Potentially change the manual median selection for the subarray?
 - [x] consider adding benchmark tests? 
 - [x] finish benchmark setup
   ~~Involves adding randomized arrays~~

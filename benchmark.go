@@ -21,9 +21,7 @@ import (
 	"github.com/go-echarts/go-echarts/v2/opts"
 )
 
-/*
-generateTestArray will generate a slice of 1,000,000 random integers
-*/
+// generateTestArray will generate a slice of 1,000,000 random integers
 func generateTestArray() []int {
 	numbers := make([]int, 1_000_000)
 
@@ -34,9 +32,8 @@ func generateTestArray() []int {
 	return numbers
 }
 
-/*
-plotResults will plot r vs time (in seconds)
-*/
+// plotResults will plot r vs time (in seconds)
+// note: this uses an external library to create the graphs
 func plotResults(data map[int]float64, title string, fileName string) {
 	barChart := charts.NewBar()
 	barChart.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
@@ -71,9 +68,7 @@ func plotResults(data map[int]float64, title string, fileName string) {
 	barChart.Render(f)
 }
 
-/*
-averageResults just averages all times recorded for each r value during the benchmark.
-*/
+// averageResults just averages all times recorded for each r value during the benchmark.
 func averageResults(data []float64) float64 {
 	sum := 0.0
 
@@ -84,9 +79,9 @@ func averageResults(data []float64) float64 {
 	return sum / float64(len(data))
 }
 
-/*
-benchmark function will run quicksort with various values of r on 10 different, random arrays of 1 million elements.
-*/
+// benchmark function will run quicksort with various values of r on 10 different, random arrays of 1 million elements.
+// It will calculate the average time to sort for each value of r over the 10 runs.
+// It will then plot the results and save the image to the images/ dir.
 func benchmark() {
 	data := make(map[int][]float64)
 
@@ -133,6 +128,7 @@ func benchmark() {
 
 /*
 benchmarkOnFile will take the file as input and run the sort using different r values.
+It will then plot the results and save the image to the images/ dir.
 */
 func benchmarkOnFile(numbers []int) {
 	fmt.Println("===========================================")
@@ -164,9 +160,7 @@ func benchmarkOnFile(numbers []int) {
 	plotResults(data, "Sorting Time for Each R for Input File", "./images/input_bar_char.html")
 }
 
-/*
-checkSort will just ensure that my sorting algorithm actually worked.
-*/
+// checkSort will just ensure that my sorting algorithm actually worked.
 func checkSort(mine []int, correct []int) {
 	for i := 0; i < len(correct); i++ {
 		if correct[i] != mine[i] {
