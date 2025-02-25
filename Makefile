@@ -1,3 +1,5 @@
+#@go build -o bin/main main.go quicksort.go benchmark.go
+# Zachary Perry - makefile for lab1
 .DEFAULT_GOAL := build
 
 fmt: 
@@ -10,7 +12,7 @@ vet: fmt
 	@go vet ./...
 
 build: vet
-	@go build -o bin/main main.go quicksort.go benchmark.go
+	@go build -o bin/main main.go benchmark.go
 
 clean:
 	@go clean

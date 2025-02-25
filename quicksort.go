@@ -13,7 +13,6 @@ package main
 /*
 findSubMedian will manually (recursively) find the median of the subarray passed to it
 More specifically, it partitions around the pivot (numbers[low])
-*/
 // TODO: comment out
 // TODO: Potentially refactor, see what tyson says
 func findSubMedian(numbers []int, low int, high int, medianIndex int) int {
@@ -102,11 +101,9 @@ func partition(numbers []int, low int, high int, pivotIndex int) int {
 	return i
 }
 
-/*
   Quicksort using the median of medians algorithm to find the best pivot
     - Will find the median of medians & its pivot index value
     - Then, it uses this for partitioning
-*/
 // Finding the pivot index of the median of medians
 // Then, call quicksort on the 'left' lower elements
 // Then, call quicksort on the 'right' lower elements
@@ -135,4 +132,4 @@ func quicksort(numbers []int, low int, high int, r int) []int {
 		numbers = quicksort(numbers, pivotIndex+1, high, r)
 	}
 	return numbers
-}
+}*/
