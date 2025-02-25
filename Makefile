@@ -10,7 +10,7 @@ vet: fmt
 	@go vet ./...
 
 build: vet
-	@go build -o bin/main main.go 
+	@go build -o bin/main main.go quicksort.go benchmark.go
 
 clean:
 	@go clean

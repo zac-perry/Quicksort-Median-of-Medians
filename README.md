@@ -5,10 +5,14 @@ Quick Sort implementation using the median-of-medians pivot selection algorithm
 - [x] Makefile, general setup
 - [x] Research more about the median-of-medians method
 - [x] Basic implementation
-- [ ] Implementation with median-of-medians
+- [x] Implementation with median-of-medians
 - [ ] Update README with details, how to run, etc.
 - [ ] Test on the hydra/tesla machines
-- [ ] consider adding benchmark tests? 
+- [x] consider adding benchmark tests? 
+- [ ] finish benchmark setup
+    - Involves adding randomized arrays
+    - Involves saving the data
+    - Involves using this data and plotting
 
 ## Implementation Details
 Quick sort, pivot selection method: median of medians with some value ----------
@@ -19,9 +23,9 @@ note: this requires go version 1.22.9. This has to be ran on the hydra/tesla mac
 
 #### To compile
 ` make `
+will compile all three go files being used here
 
-#### To run
-` ./bin/main inputFile  `
+#### To run quicksort on a specified file
+` ./bin/main inputFile [-benchmark]`
+optional benchmark parameter if you want to see the performance for various values of r on 1 million random elements
 
-
-#### run benchmarks
