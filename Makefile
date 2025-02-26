@@ -1,5 +1,5 @@
-#@go build -o bin/main main.go quicksort.go benchmark.go
-# Zachary Perry - makefile for lab1
+# Zachary Perry - makefile for Lab1
+# Compiles main into bin/main
 .DEFAULT_GOAL := build
 
 fmt: 

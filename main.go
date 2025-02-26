@@ -6,8 +6,9 @@ Class: COSC 581
 Lab 1: Median of Medians Quicksort Assignment
 
 main.go
-- Contains driver code for reading in the file and calling quicksort. Also supports the '-benchmark' cmd line arg to run benchmark tests.
-- Additionally, contains implementation for quicksort & median of medians algorithm
+- Contains driver code for reading in the file and calling quicksort.
+- Supports the '-benchmark' cmd line arg to run benchmark tests.
+- Additionally, contains implementation for quicksort & median of medians algorithm.
 */
 
 package main
@@ -19,86 +20,74 @@ import (
 	"strconv"
 )
 
-/*
-findSubMedian will manually (recursively) find the median of the subarray passed to it
-More specifically, it partitions around the pivot (numbers[low])
-*/
-// TODO: comment out
-// TODO: Potentially refactor, see what tyson says
+// FindSubMedian will recursively find the median of the subarray passed to it.
+// First, it will partition the subarray to get the pivotIndex.
+// Partially sorts the array by partitioning portions that could contain the median value.
+// Once the pivotIndex used == the medianIndex(len/2) -> median element has been found.
+// sources: Textbook (Chapter 9), https://en.wikipedia.org/wiki/Quickselect.
 func findSubMedian(numbers []int, low int, high int, medianIndex int) int {
 	// If the low and high are equal, then we can just return the number at this index as it is the median
 	if low == high {
 		return numbers[low]
 	}
 
-	// partition the subarray using a starting pivot index at index low
+	// Partition the subarray using a starting pivot index at index low
 	pivotIndex := low
 	pivotIndex = partition(numbers, low, high, pivotIndex)
 
 	// Will recursivley call + partition until we find the index at which the median will exist
-	// will keep partitioning until we find the partition index where the median exists
+	// If the medianIndex is less than the pivotIndex, search the left side. Otherwise, search right.
 	if medianIndex == pivotIndex {
 		return numbers[medianIndex]
 	} else if medianIndex < pivotIndex {
 		return findSubMedian(numbers, low, pivotIndex-1, medianIndex)
-	} else {
-		return findSubMedian(numbers, pivotIndex+1, high, medianIndex)
 	}
+	return findSubMedian(numbers, pivotIndex+1, high, medianIndex)
 }
 
-// medianOfMedians will find the median of all medians in the array.
+// MedianofMedians will find the median of all medians in the array
 // It does this by looping over the number of subarrays based on r.
 // It will create subarrays, find the median of these subarrays, and store those values.
 // Finally, it will recursively call the function to continue and find the median of all medians.
+// sources: Textbook (Chapter 9), https://en.wikipedia.org/wiki/Median_of_medians
 func medianOfMedians(numbers []int, r int) int {
 	length := len(numbers)
 
 	// For the numbers array with current length <= r, manually sort and return median of this subarray
 	if length <= r {
-		tmp := make([]int, length)
-		copy(tmp, numbers)
-		return findSubMedian(tmp, 0, length-1, length/2)
+		copyNumbers := make([]int, length)
+		copy(copyNumbers, numbers)
+		return findSubMedian(copyNumbers, 0, length-1, length/2)
 	}
 
-	// Otherwise, find the number of subarrays that will be needed based on r.
-	// Create another array to hold this many median values
 	numSubArrays := (length + r - 1) / r
 	medians := make([]int, numSubArrays)
 
 	// Loop through and calculate new indicies for each subarray.
 	// Then, for that subarray, find the median and store into the 'medians' array
 	for i := 0; i < numSubArrays; i++ {
-		// Determine the start and end of this group
-		// getting the current start + end for the current subarray
 		newLow := i * r
-		newEnd := newLow + r
-		if newEnd > length {
-			newEnd = length
+		newHigh := newLow + r
+		if newHigh > length {
+			newHigh = length
 		}
 
-		// Extract the current group
-		group := numbers[newLow:newEnd]
-
-		// insert into the medians array to recursivley find the median of sub medians
-		medians[i] = findSubMedian(group, 0, len(group)-1, len(group)/2)
+		subgroup := numbers[newLow:newHigh]
+		medians[i] = findSubMedian(subgroup, 0, len(subgroup)-1, len(subgroup)/2)
 	}
 
-	// recursivley find the median of all medians found
 	return medianOfMedians(medians, r)
 }
 
-// partition the data, return the pivot index
-// Take the current median value as the pivot
-// From low to high, if the number is <= pivot --> swap value positions
-// Then, swap the final elements at i and high indexes, return the pivot index
-
-// partition will use the given pivotIndex and separate out the array such that all elements <
-// the item at the pivot index are on the left and the elements > are on the right side
-// partiton will return the index of the pivot item
+// Partition will use the given pivotIndex and separate out the array such that all elements <
+// the item at the pivot index are on the left and the elements > are on the right side.
+// partiton will return the index of the pivot item.
 func partition(numbers []int, low int, high int, pivotIndex int) int {
+	// Get pivot and move to the back
 	pivot := numbers[pivotIndex]
 	numbers[pivotIndex], numbers[high] = numbers[high], numbers[pivotIndex]
 
+	// Swapping
 	i := low
 	for j := low; j < high; j++ {
 		if numbers[j] <= pivot {
@@ -107,30 +96,26 @@ func partition(numbers []int, low int, high int, pivotIndex int) int {
 		}
 	}
 
+	// Move the pivot back
 	numbers[i], numbers[high] = numbers[high], numbers[i]
 	return i
 }
 
-/*
-  Quicksort using the median of medians algorithm to find the best pivot
-    - Will find the median of medians & its pivot index value
-    - Then, it uses this for partitioning
-*/
-// Finding the pivot index of the median of medians
-// Then, call quicksort on the 'left' lower elements
-// Then, call quicksort on the 'right' lower elements
+// Quicksort algorithm using median of medians to find the pivot.
+// Will find the pivot + pivot index using median of medians.
+// Then, it will quicksort using this as the starting pivotIndex.
+// Partition -> Quicksort(left side) -> Quicksort (right side).
 func quicksort(numbers []int, low int, high int, r int) []int {
-	// as long as low < high, perform quicksort
 	if low < high {
-		// make subarray to use for median of medians
-		subArray := make([]int, high-low+1)
-		copy(subArray, numbers[low:high+1])
+		// copy array to use for medianOfMedians
+		copyNumbers := make([]int, high-low)
+		copy(copyNumbers, numbers[low:high])
 
-		// find the median of medians to use as the starting pivot
-		pivot := medianOfMedians(subArray, r)
+		// Find the median of medians to use as the starting pivot
+		pivot := medianOfMedians(copyNumbers, r)
 		pivotIndex := low
 
-		// find the pivot index (median index) to use
+		// Find the pivot index (median index) to use
 		for i := low; i <= high; i++ {
 			if numbers[i] == pivot {
 				pivotIndex = i
@@ -138,15 +123,16 @@ func quicksort(numbers []int, low int, high int, r int) []int {
 			}
 		}
 
-		// regular quicksorting shtuff
+		// Regular quicksorting
 		pivotIndex = partition(numbers, low, high, pivotIndex)
 		numbers = quicksort(numbers, low, pivotIndex-1, r)
 		numbers = quicksort(numbers, pivotIndex+1, high, r)
 	}
+
 	return numbers
 }
 
-// readFile will just read the numbers in from the file.
+// ReadFile will just read the numbers in from the file.
 // This assumes that the file contains a single number on each line (seperated by newlines).
 func readFile(fileName string) []int {
 	file, err := os.Open(fileName)
@@ -171,7 +157,7 @@ func readFile(fileName string) []int {
 	return numbers
 }
 
-// printOutput just does exactly what is says -> prints the output
+// PrintOutput just prints the sortedNumbers to stdout.
 func printOutput(sortedNumbers []int) {
 	for i := 0; i < len(sortedNumbers); i++ {
 		fmt.Print(sortedNumbers[i], " ")
@@ -197,8 +183,8 @@ func main() {
 		return
 	}
 
-	// Defaulting to an r of 5 here (benchmark tests 3,5,7,9,11)
-	r := 5
+	// Defaulting to an r of 7 here (benchmark tests 3,5,7,9,11)
+	r := 7
 	numbers := readFile(os.Args[1])
 	sortedNumbers := quicksort(numbers, 0, len(numbers)-1, r)
 	printOutput(sortedNumbers)
