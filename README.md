@@ -11,24 +11,36 @@ _*input/*_ - contains various input files
 Note: This requires go version 1.22.9. Currently, this is the version install on the hydra/tesla machines, hence the requirement.
 
 ### How to compile
+---
 To compile the program, just run ` make `. This will compile all of the files used for this.
 To remove binary files, run `make clean`.
 
 ### How to run quicksort on a specified file
+---
 ```
 ./bin/main inputFile [-benchmark]
 ```
 Two things to note here. It assumes that the input file contains a single number on each line (newline seperated).
 Additionally, the benchmark argument is optional.
 
-If you just want to see the sorted output, you can run the program using: `./bin/main inputFile`
+If you just want to see the sorted output, you can run the program using: 
+```
+./bin/main inputFile
+```
 
 NOTE: in the code, the r value is defaulted to 7.
 
 ### Benchmarking
+---
 To benchmark performance, i time the amount of time it takes the program to sort the given input for each value of r (3, 5, 7, 9, 11). Then, I create a bar chart displaying the results. This is saved into an HTML file within the `images/` directory.
 
-If you want to evaluate the performance of the program on the given input file (with each value of r): `./bin/main inputFile -benchmark`
+If you want to evaluate the performance of the program on the given input file (with each value of r): 
+```
+./bin/main inputFile -benchmark
+```
 
-If you want to evaluate the performance of the program in general (with each value of r): `./bin/main -benchmark`
+If you want to evaluate the performance of the program in general (with each value of r): 
+```
+./bin/main -benchmark
+```
 This will run the program 10 different times with 10 different arrays containing 1,000,000 random elements. It will evaluate each value of r for each run. 
